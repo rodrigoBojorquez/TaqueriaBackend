@@ -1,0 +1,6 @@
+@TaqueriaSolution_HostAddress = http://localhost:5218
+
+GET {{TaqueriaSolution_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
