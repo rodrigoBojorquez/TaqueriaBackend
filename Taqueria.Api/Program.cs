@@ -1,10 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Taqueria.Api.Data;
+using Taqueria.Api.Data.Entities;
+using Taqueria.Api.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+// Metodo 2
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<DishRepository>();
 
 // Configuiracion de Contexto de Base de Datos
 builder.Services.AddDbContext<TaqueriaDbContext>(options =>
@@ -21,6 +27,7 @@ app.UseSwaggerUI(config => { config.SwaggerEndpoint("/openapi/v1.json", "Taqueri
 await using (var scope = app.Services.CreateAsyncScope())
 await using (var dbContext = scope.ServiceProvider.GetRequiredService<TaqueriaDbContext>())
 {
+    
     await dbContext.Database.EnsureCreatedAsync();
 }
 
