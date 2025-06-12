@@ -29,7 +29,12 @@ cd TaqueriaBackend
 dotnet restore
  ```
 
-3. **Ejecutar el servidor:**
+3. **Crear carpeta 'Bin':**
+```sh
+mkdir Taqueria.Api/Data/Bin
+```
+
+4. **Ejecutar el servidor:**
 
 Preferiblemente desde Visual Studio, Rider, o con el comando
 
