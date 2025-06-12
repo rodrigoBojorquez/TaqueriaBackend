@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Taqueria.Api.Common.Interfaces;
 using Taqueria.Api.Data.Entities;
 
 namespace Taqueria.Api.Data.Repositories;
 
-public class GenericRepository<T>
+public class GenericRepository<T> : IRepository<T>
     where T : class
 {
     private readonly TaqueriaDbContext _dbContext;
@@ -13,50 +14,36 @@ public class GenericRepository<T>
         _dbContext = context;
     }
     
-    public virtual async Task<T?> GetByIdAsync(Guid id)
+    public async Task<T?> GetByIdAsync(Guid id)
     {
         return await _dbContext.Set<T>().FindAsync(id);
     }
 
-    public virtual async Task<List<T>> GetAllAsync()
+    public async Task<List<T>> GetAllAsync()
     {
         return await _dbContext.Set<T>().ToListAsync();
     }
     
-    public virtual async Task<T> AddAsync(T entity)
+    public async Task AddAsync(T entity)
     {
         await _dbContext.Set<T>().AddAsync(entity);
         await _dbContext.SaveChangesAsync();
-        return entity;
     }
     
-    public virtual async Task<T?> UpdateAsync(Guid id, T updateEntity)
+    public async Task UpdateAsync(T updateEntity)
     {
-        T? entity = await _dbContext.Set<T>().FindAsync(id);
-        
-        if(entity == null)
-        {
-             return null;
-        }
-        
-        _dbContext.Entry(entity).CurrentValues.SetValues(updateEntity);
-        
+        _dbContext.Set<T>().Attach(updateEntity);
+        _dbContext.Entry(updateEntity).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();
-        return entity;
+        await _dbContext.Entry(updateEntity).ReloadAsync();
     }
     
-    public virtual async Task<bool> HardDeleteAsync(Guid id)
+    public async Task HardDeleteAsync(Guid id)
     {
         T? entity = await _dbContext.Set<T>().FindAsync(id);
-        
-        if(entity == null)
-        {
-            return false;
-        }
         
         _dbContext.Set<T>().Remove(entity);
         await _dbContext.SaveChangesAsync();
-        return true;
     }
 
     

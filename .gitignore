@@ -15,6 +15,7 @@
 TaqueriaSolutions/assets/*
 TaqueriaSolutions/logs
 
+!Taqueria.Api/Data/Bin/.gitkeep
 Taqueria.Api/Data/Bin/*
 
 # User-sSgefic files (MonoDevelop/Xamarin Studio)
