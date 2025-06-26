@@ -1,20 +1,28 @@
 using Microsoft.EntityFrameworkCore;
-using Taqueria.Api.Common.Interfaces;
+using Taqueria.Api.Common.Interfaces.Auth;
+using Taqueria.Api.Common.Interfaces.Business;
+using Taqueria.Api.Common.Interfaces.Repositories;
 using Taqueria.Api.Data;
-using Taqueria.Api.Data.Entities;
 using Taqueria.Api.Data.Repositories;
+using Taqueria.Api.Services.Auth;
 using Taqueria.Api.Services.Dish;
+using Taqueria.Api.Services.Drink;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// Metodo 2
+// Repositorios
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IDishRepository, DishRepository>();
-builder.Services.AddScoped<DishService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IDrinkRepository, DrinkRepository>();
+
+// Servicios
+builder.Services.AddScoped<IDishService, DishService>();
+builder.Services.AddScoped<IDrinkService, DrinkService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Configuiracion de Contexto de Base de Datos
 builder.Services.AddDbContext<TaqueriaDbContext>(options =>

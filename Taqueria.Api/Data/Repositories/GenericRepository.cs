@@ -1,49 +1,43 @@
 using Microsoft.EntityFrameworkCore;
 using Taqueria.Api.Common.Interfaces;
+using Taqueria.Api.Common.Interfaces.Repositories;
 using Taqueria.Api.Data.Entities;
 
 namespace Taqueria.Api.Data.Repositories;
 
-public class GenericRepository<T> : IRepository<T>
+public class GenericRepository<T>(TaqueriaDbContext context) : IRepository<T>
     where T : class
 {
-    private readonly TaqueriaDbContext _dbContext;
-
-    public GenericRepository(TaqueriaDbContext context)
-    {
-        _dbContext = context;
-    }
-    
     public async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _dbContext.Set<T>().FindAsync(id);
+        return await context.Set<T>().FindAsync(id);
     }
 
     public async Task<List<T>> GetAllAsync()
     {
-        return await _dbContext.Set<T>().ToListAsync();
+        return await context.Set<T>().ToListAsync();
     }
     
     public async Task AddAsync(T entity)
     {
-        await _dbContext.Set<T>().AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+        await context.Set<T>().AddAsync(entity);
+        await context.SaveChangesAsync();
     }
     
     public async Task UpdateAsync(T updateEntity)
     {
-        _dbContext.Set<T>().Attach(updateEntity);
-        _dbContext.Entry(updateEntity).State = EntityState.Modified;
-        await _dbContext.SaveChangesAsync();
-        await _dbContext.Entry(updateEntity).ReloadAsync();
+        context.Set<T>().Attach(updateEntity);
+        context.Entry(updateEntity).State = EntityState.Modified;
+        await context.SaveChangesAsync();
+        await context.Entry(updateEntity).ReloadAsync();
     }
     
     public async Task HardDeleteAsync(Guid id)
     {
-        T? entity = await _dbContext.Set<T>().FindAsync(id);
-        
-        _dbContext.Set<T>().Remove(entity);
-        await _dbContext.SaveChangesAsync();
+        T? entity = await context.Set<T>().FindAsync(id);
+
+        if (entity != null) context.Set<T>().Remove(entity);
+        await context.SaveChangesAsync();
     }
 
     

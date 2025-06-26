@@ -1,4 +1,4 @@
-namespace Taqueria.Api.Common.Interfaces;
+namespace Taqueria.Api.Common.Interfaces.Repositories;
 
 public interface IRepository<T> where T : class
 {

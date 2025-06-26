@@ -1,6 +1,9 @@
+using Taqueria.Api.Common.Interfaces.Business;
+using Taqueria.Api.Common.Interfaces.Repositories;
+
 namespace Taqueria.Api.Services.Dish;
 
-public class DishService(IDishRepository dishRepository)
+public class DishService(IDishRepository dishRepository) : IDishService
 {
         public async Task CreateAsync(string name, string? description, decimal price)
     {
@@ -14,9 +17,10 @@ public class DishService(IDishRepository dishRepository)
         await dishRepository.AddAsync(dish);
     }
     
-    public async Task<List<Data.Entities.Dish>> GetAllAsync()
+    public async Task<List<DishResult>> GetAllAsync()
     {
-        return await dishRepository.GetAllAsync();
+        var data=  await dishRepository.GetAllAsync();
+        return data.Select(d => d.ToDishResult()).ToList();
     }
     
     public async Task UpdateAsync(Guid id, string name, string? description, decimal price)
@@ -37,5 +41,11 @@ public class DishService(IDishRepository dishRepository)
     public async Task DeleteAsync(Guid id)
     {
         await dishRepository.HardDeleteAsync(id);
+    }
+
+    public async Task<DishResult?> GetByIdAsync(Guid id)
+    {
+        var dish = await dishRepository.GetByIdAsync(id);
+        return dish?.ToDishResult();
     }
 }

@@ -1,15 +1,16 @@
 using Microsoft.EntityFrameworkCore;
+using Taqueria.Api.Common.Interfaces.Repositories;
 using Taqueria.Api.Data.Entities;
 
 namespace Taqueria.Api.Data.Repositories;
 
-public class UserRepository: GenericRepository<User>
+public class UserRepository(TaqueriaDbContext context) : GenericRepository<User>(context), IUserRepository
 {
-    private readonly TaqueriaDbContext _context;
+    private readonly TaqueriaDbContext _context = context;
 
-    public UserRepository(TaqueriaDbContext context): base(context)
+    public async Task<User?> GetByEmailAsync(string email)
     {
-        _context = context;
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == email);
     }
-    
 }

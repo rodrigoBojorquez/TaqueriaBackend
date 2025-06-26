@@ -39,7 +39,7 @@ public class DishesController(DishService dishService) : ControllerBase
         return Ok(dishes);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update([FromBody] UpdateDishRequest request, Guid id)
     {
         // Implement update logic here
@@ -47,7 +47,7 @@ public class DishesController(DishService dishService) : ControllerBase
         return Ok();
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
         await dishService.DeleteAsync(id);
